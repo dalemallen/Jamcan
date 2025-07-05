@@ -1,68 +1,90 @@
-import React from 'react';
+import React from "react";
+import {
+	Dialog,
+	DialogTitle,
+	DialogContent,
+	DialogActions,
+	Button,
+	TextField,
+	Box,
+	Typography,
+} from "@mui/material";
 
-function CartFormModal({ cart, onClose }) {
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    alert('Order submitted!');
-    onClose();
-  };
+const CartFormModal = ({ open, onClose, cart }) => {
+	const totalPrice = cart.reduce(
+		(acc, item) => acc + item.price * item.quantity,
+		0
+	);
 
-  return (
-    <div style={{
-      position: 'fixed',
-      top: 0, left: 0,
-      width: '100vw',
-      height: '100vh',
-      background: 'rgba(0,0,0,0.4)',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      zIndex: 1000
-    }}>
-      <form onSubmit={handleSubmit} style={{
-        background: 'white',
-        padding: 24,
-        borderRadius: 8,
-        width: 400,
-        maxHeight: '80vh',
-        overflowY: 'auto'
-      }}>
-        <h2>Order Details</h2>
-        <ul>
-          {cart.map(item => (
-            <li key={item.id}>
-              {item.name} × {item.qty}
-            </li>
-          ))}
-        </ul>
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		alert("Order submitted!");
+		onClose();
+	};
 
-        <div style={{ marginTop: 16 }}>
-          <label>Name</label>
-          <input required name="name" style={{ width: '100%' }} />
-        </div>
+	return (
+		<Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+			<DialogTitle>Checkout</DialogTitle>
+			<form onSubmit={handleSubmit}>
+				<DialogContent dividers>
+					<Box sx={{ mb: 2 }}>
+						<Typography variant="body1">Your Order:</Typography>
+						<ul>
+							{cart.map((item) => (
+								<li key={`${item.id}-${item.size}`}>
+									{item.name} ({item.size}) × {item.quantity}
+								</li>
+							))}
+						</ul>
+						<Typography variant="h6">
+							Total: ${totalPrice.toFixed(2)}
+						</Typography>
+						<Typography variant="caption" display="block" mt={1}>
+							Estimated delivery: 30–45 minutes
+						</Typography>
+					</Box>
 
-        <div style={{ marginTop: 12 }}>
-          <label>Email</label>
-          <input type="email" required name="email" style={{ width: '100%' }} />
-        </div>
+					<TextField
+						fullWidth
+						label="Full Name"
+						name="name"
+						required
+						margin="dense"
+					/>
+					<TextField
+						fullWidth
+						label="Email"
+						name="email"
+						type="email"
+						required
+						margin="dense"
+					/>
+					<TextField
+						fullWidth
+						label="Phone"
+						name="phone"
+						required
+						margin="dense"
+					/>
+					<TextField
+						fullWidth
+						label="Notes"
+						name="notes"
+						multiline
+						rows={3}
+						margin="dense"
+					/>
+				</DialogContent>
 
-        <div style={{ marginTop: 12 }}>
-          <label>Phone</label>
-          <input required name="phone" style={{ width: '100%' }} />
-        </div>
-
-        <div style={{ marginTop: 12 }}>
-          <label>Notes</label>
-          <textarea name="notes" style={{ width: '100%' }} rows={3}></textarea>
-        </div>
-
-        <div style={{ marginTop: 16, display: 'flex', justifyContent: 'space-between' }}>
-          <button type="button" onClick={onClose}>Cancel</button>
-          <button type="submit">Submit Order</button>
-        </div>
-      </form>
-    </div>
-  );
-}
+				<DialogActions>
+					<Button onClick={onClose}>Cancel</Button>
+					<Button type="submit" variant="contained">
+						Submit Order
+					</Button>
+				</DialogActions>
+			</form>
+		</Dialog>
+	);
+};
 
 export default CartFormModal;

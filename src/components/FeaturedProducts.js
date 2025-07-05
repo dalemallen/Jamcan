@@ -1,4 +1,3 @@
-// src/components/FeaturedProducts.js
 import React, { useState, useEffect } from "react";
 import {
 	Box,
@@ -15,18 +14,17 @@ import products from "../data/products";
 const FeaturedProducts = () => {
 	const theme = useTheme();
 	const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+	const isTablet = useMediaQuery(theme.breakpoints.between("sm", "md"));
 
 	let featuredProducts = products.filter((p) => p.featured);
 
 	if (featuredProducts.length === 0) {
-		// fallback: use the first 4
 		featuredProducts = products.slice(0, 4);
 	}
 
-	console.log("featuredProducts: ", featuredProducts);
 	const [startIndex, setStartIndex] = useState(0);
-	const itemsToShow = isMobile ? 1 : 4;
-	const maxIndex = featuredProducts.length - itemsToShow;
+	const itemsToShow = isMobile ? 1 : isTablet ? 2 : 4;
+	const maxIndex = Math.max(0, featuredProducts.length - itemsToShow);
 
 	const scroll = (direction) => {
 		if (direction === "left") {
@@ -39,8 +37,9 @@ const FeaturedProducts = () => {
 	useEffect(() => {
 		const interval = setInterval(() => scroll("right"), 5000);
 		return () => clearInterval(interval);
-	}, [startIndex]);
+	}, [startIndex, maxIndex]);
 
+	// Always render `itemsToShow` slots to keep layout stable
 	const visibleProducts = featuredProducts.slice(
 		startIndex,
 		startIndex + itemsToShow
@@ -49,7 +48,7 @@ const FeaturedProducts = () => {
 	return (
 		<Box sx={{ py: 8, textAlign: "center" }}>
 			<Typography variant="h4" sx={{ fontWeight: "bold", mb: 4 }}>
-				FEATURED PRODUCTS
+				Featured Products
 			</Typography>
 
 			<Box
@@ -63,12 +62,31 @@ const FeaturedProducts = () => {
 					<ArrowBackIos />
 				</IconButton>
 
-				<Grid container spacing={3} justifyContent="center" maxWidth="lg">
-					{visibleProducts.map((product, i) => (
-						<Grid item key={i} xs={12} sm={6} md={3}>
-							<ProductCard product={product} />
-						</Grid>
-					))}
+				<Grid
+					container
+					spacing={3}
+					justifyContent="center"
+					sx={{ maxWidth: "1200px", mx: "auto" }}
+				>
+					{Array.from({ length: itemsToShow }).map((_, i) => {
+						const product = visibleProducts[i];
+						return (
+							<Grid key={i} size={{ xs: 12, sm: 6, md: 3 }}>
+								{product ? (
+									<ProductCard product={product} />
+								) : (
+									<Box
+										sx={{
+											height: "100%",
+											visibility: "hidden",
+										}}
+									>
+										<ProductCard product={{}} />
+									</Box>
+								)}
+							</Grid>
+						);
+					})}
 				</Grid>
 
 				<IconButton onClick={() => scroll("right")}>
@@ -81,6 +99,7 @@ const FeaturedProducts = () => {
 				{Array.from({ length: maxIndex + 1 }).map((_, i) => (
 					<Box
 						key={i}
+						onClick={() => setStartIndex(i)}
 						sx={{
 							display: "inline-block",
 							width: 10,
@@ -88,6 +107,7 @@ const FeaturedProducts = () => {
 							borderRadius: "50%",
 							backgroundColor: i === startIndex ? "#333" : "#ccc",
 							mx: 0.5,
+							cursor: "pointer",
 							transition: "background-color 0.3s ease",
 						}}
 					/>

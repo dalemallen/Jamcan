@@ -13,7 +13,7 @@ import EmailIcon from "@mui/icons-material/Email";
 
 const Footer = () => {
 	return (
-		<Box sx={{ backgroundColor: "#2E2E2E", color: "#fff", py: 6 }}>
+		<Box sx={{ py: 6 }}>
 			<Container>
 				<Grid container spacing={4}>
 					{/* Logo / Brand */}

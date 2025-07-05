@@ -17,7 +17,7 @@ const Header = ({ onCartClick }) => {
 
 	// ✅ Defensive cart count calculation
 	const cartCount = Array.isArray(cartItems)
-		? cartItems.reduce((total, item) => total + (item.qty || 0), 0)
+		? cartItems.reduce((total, item) => total + (item.quantity || 0), 0)
 		: 0;
 
 	return (

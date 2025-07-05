@@ -1,9 +1,7 @@
 import React, { createContext, useEffect, useState } from "react";
 
-// Create the context
 export const CartContext = createContext();
 
-// Provider component
 export const CartProvider = ({ children }) => {
 	const [cartItems, setCartItems] = useState(() => {
 		const saved = localStorage.getItem("cartItems");
@@ -18,7 +16,6 @@ export const CartProvider = ({ children }) => {
 	const addToCart = (product, selectedSize) => {
 		const price = product.price[selectedSize];
 
-		// Check if item with same ID and size already exists
 		const existingIndex = cartItems.findIndex(
 			(item) => item.id === product.id && item.size === selectedSize
 		);
@@ -37,13 +34,27 @@ export const CartProvider = ({ children }) => {
 					price,
 					image: product.image,
 					quantity: 1,
+					spiceLevel: product.spiceLevel,
+					description: product.description,
+					featured: product.featured || false,
 				},
 			]);
 		}
 	};
 
-	// Remove one unit of a specific size
-	const removeFromCart = (productId, size) => {
+	// Increment quantity
+	const incrementQuantity = (productId, size) => {
+		setCartItems((prev) =>
+			prev.map((item) =>
+				item.id === productId && item.size === size
+					? { ...item, quantity: item.quantity + 1 }
+					: item
+			)
+		);
+	};
+
+	// Decrement quantity
+	const decrementQuantity = (productId, size) => {
 		setCartItems((prev) =>
 			prev
 				.map((item) =>
@@ -55,12 +66,19 @@ export const CartProvider = ({ children }) => {
 		);
 	};
 
-	// Remove all sizes for a product
+	// Remove a specific line-item completely
+	const removeFromCart = (productId, size) => {
+		setCartItems((prev) =>
+			prev.filter((item) => !(item.id === productId && item.size === size))
+		);
+	};
+
+	// Remove all sizes of a product
 	const clearProduct = (productId) => {
 		setCartItems((prev) => prev.filter((item) => item.id !== productId));
 	};
 
-	// Clear all items
+	// Clear entire cart
 	const clearCart = () => {
 		setCartItems([]);
 	};
@@ -70,6 +88,8 @@ export const CartProvider = ({ children }) => {
 			value={{
 				cartItems,
 				addToCart,
+				incrementQuantity,
+				decrementQuantity,
 				removeFromCart,
 				clearProduct,
 				clearCart,

@@ -1,4 +1,3 @@
-// src/components/ProductCard.js
 import React from "react";
 import { Box, Typography, Button, Card, CardContent } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -6,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 const ProductCard = ({ product }) => {
 	const navigate = useNavigate();
 
-	// Render price nicely if it's an object (multiple sizes), else fallback
 	const renderPrice = () => {
 		if (typeof product.price === "object") {
 			return Object.entries(product.price)
@@ -19,11 +17,14 @@ const ProductCard = ({ product }) => {
 	return (
 		<Card
 			sx={{
-				maxWidth: 240,
+				height: "100%",
+				display: "flex",
+				flexDirection: "column",
+				justifyContent: "space-between",
 				mx: "auto",
 				transition: "transform 0.3s ease, box-shadow 0.3s ease",
 				"&:hover": {
-					transform: "scale(1.05)",
+					transform: "translateY(-4px)",
 					boxShadow: 6,
 				},
 			}}
@@ -34,20 +35,34 @@ const ProductCard = ({ product }) => {
 				alt={product.name}
 				loading="lazy"
 				sx={{
-					width: "100%",
 					height: 180,
+					width: "auto",
 					objectFit: "contain",
-					borderRadius: "4px 4px 0 0",
+					mx: "auto",
+					mt: 2,
 				}}
 			/>
 
-			<CardContent sx={{ textAlign: "center" }}>
-				<Typography variant="subtitle1" fontWeight="bold" gutterBottom>
+			<CardContent
+				sx={{
+					textAlign: "center",
+					flexGrow: 1,
+					display: "flex",
+					flexDirection: "column",
+					justifyContent: "space-between",
+				}}
+			>
+				<Typography
+					variant="subtitle1"
+					fontWeight="bold"
+					sx={{ minHeight: 48 }}
+					gutterBottom
+				>
 					{product.name}
 				</Typography>
 
-				{/* Optional: Spice Level */}
-				<Box mb={1}>
+				{/* Spice Level */}
+				<Box mb={1} minHeight={24}>
 					{Array.from({ length: product.spiceLevel || 0 }).map((_, i) => (
 						<span key={i}>🌶️</span>
 					))}

@@ -7,18 +7,18 @@ import FlavorGuide from "../components/FlavorGuide";
 import RecipeSection from "../components/RecipeSection";
 import TestimonialsSection from "../components/TestimonialSection";
 import NewsletterSection from "../components/NewsletterSection";
-
+import { Box, Typography, Grid } from "@mui/material";
 const Home = () => {
 	return (
-		<div>
+		<Grid container size={{ xs: 12 }} justifyContent="center">
 			<Hero />
 			<FeaturedProducts />
 			<AboutUsSection />
 			<FlavorGuide />
-			{/* <RecipeSection /> */}
+
 			<TestimonialsSection />
 			<NewsletterSection />
-		</div>
+		</Grid>
 	);
 };
 
